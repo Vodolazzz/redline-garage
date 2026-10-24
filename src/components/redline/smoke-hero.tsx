@@ -1,9 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { RotateCcw } from "lucide-react"
 
-// The opening shot is real footage, full screen, playing once:
+// The opening shot is real footage, full screen:
 //   1. side-on, the rear tyre spins up and the smoke starts pouring out
 //   2. from behind: the burnout, the car pulls away into its own smoke
 //   3. the smoke closes the frame like a white curtain, thins out, REDLINE
@@ -17,12 +16,16 @@ const CLIPS = {
 // how many seconds before the end of the second clip the curtain starts closing
 const CURTAIN_LEAD = 3.2
 
-type Phase = "side" | "rear" | "curtain" | "title"
+// The first run plays the whole story and closes with the white curtain and the
+// name. After that the name stays and the two clips keep cycling under a dark veil.
+type Clip = "side" | "rear"
+type Stage = "intro" | "curtain" | "title"
 
 export function SmokeHero() {
   const sideRef = useRef<HTMLVideoElement>(null)
   const rearRef = useRef<HTMLVideoElement>(null)
-  const [phase, setPhase] = useState<Phase>("side")
+  const [clip, setClip] = useState<Clip>("side")
+  const [stage, setStage] = useState<Stage>("intro")
   const [quality, setQuality] = useState<"hd" | "sd" | null>(null)
 
   // pick the file size once we know the screen
@@ -30,59 +33,54 @@ export function SmokeHero() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     // eslint-disable-next-line react-hooks/set-state-in-effect -- one-off read of the device
     setQuality(window.innerWidth < 900 ? "sd" : "hd")
-    if (reduce) setPhase("title")
+    if (reduce) setStage("title")
   }, [])
 
-  // the cut list
+  // the cut list: side → rear → side → rear … forever
   useEffect(() => {
     const side = sideRef.current
     const rear = rearRef.current
-    if (!side || !rear || !quality || phase === "title") return
+    if (!side || !rear || !quality) return
 
-    const play = (v: HTMLVideoElement) => v.play().catch(() => setPhase("title"))
+    const play = (v: HTMLVideoElement) => v.play().catch(() => setStage("title"))
 
     const onSideTime = () => {
-      if (side.duration && side.currentTime > side.duration - 0.45 && phase === "side") {
+      if (clip === "side" && side.duration && side.currentTime > side.duration - 0.45) {
         rear.currentTime = 0
         play(rear)
-        setPhase("rear")
+        setClip("rear")
       }
     }
     const onRearTime = () => {
-      if (rear.duration && rear.currentTime > rear.duration - CURTAIN_LEAD && phase === "rear") setPhase("curtain")
+      if (stage === "intro" && rear.duration && rear.currentTime > rear.duration - CURTAIN_LEAD) setStage("curtain")
+      if (clip === "rear" && rear.duration && rear.currentTime > rear.duration - 0.45) {
+        side.currentTime = 0
+        play(side)
+        setClip("side")
+      }
     }
-    const onRearEnd = () => setPhase("title")
 
     side.addEventListener("timeupdate", onSideTime)
     rear.addEventListener("timeupdate", onRearTime)
-    rear.addEventListener("ended", onRearEnd)
-    if (phase === "side" && side.paused) play(side)
+    if (clip === "side" && side.paused) play(side)
     return () => {
       side.removeEventListener("timeupdate", onSideTime)
       rear.removeEventListener("timeupdate", onRearTime)
-      rear.removeEventListener("ended", onRearEnd)
     }
-  }, [phase, quality])
+  }, [clip, stage, quality])
 
-  // the curtain hands over to the title on its own, even if "ended" is late
+  // the curtain hands over to the name on its own
   useEffect(() => {
-    if (phase !== "curtain") return
-    const id = window.setTimeout(() => setPhase("title"), (CURTAIN_LEAD - 0.4) * 1000)
+    if (stage !== "curtain") return
+    const id = window.setTimeout(() => setStage("title"), (CURTAIN_LEAD - 0.4) * 1000)
     return () => window.clearTimeout(id)
-  }, [phase])
-
-  function replay() {
-    const side = sideRef.current
-    const rear = rearRef.current
-    if (!side || !rear) return
-    rear.pause()
-    side.currentTime = 0
-    setPhase("side")
-  }
+  }, [stage])
 
   const grade = "saturate(0.32) contrast(1.06) brightness(0.9)"
-  const curtain = phase === "curtain" ? 0.82 : phase === "title" ? 0.3 : 0
-  const showTitle = phase === "title"
+  const showTitle = stage === "title"
+  const curtain = stage === "curtain" ? 0.82 : 0
+  // under the name the film keeps running, dimmed so the word always reads
+  const veil = showTitle ? 0.5 : 0
 
   return (
     <section data-tone="dark" aria-label="REDLINE — автосервис" className="dark relative h-[100svh] min-h-[540px] w-full overflow-hidden bg-[#141517] text-[#eceae6]">
@@ -99,7 +97,7 @@ export function SmokeHero() {
             preload="auto"
             aria-hidden
             className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"
-            style={{ filter: grade, opacity: phase === "side" ? 1 : 0 }}
+            style={{ filter: grade, opacity: clip === "side" ? 1 : 0 }}
           />
           <video
             ref={rearRef}
@@ -108,11 +106,10 @@ export function SmokeHero() {
             playsInline
             preload="auto"
             aria-hidden
-            className="absolute inset-0 h-full w-full object-cover transition-[opacity,transform,filter] duration-[1500ms]"
+            className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"
             style={{
-              filter: `${grade} ${showTitle ? "blur(6px)" : ""}`,
-              opacity: phase === "side" ? 0 : 1,
-              transform: showTitle ? "scale(1.06)" : "scale(1)",
+              filter: grade,
+              opacity: clip === "rear" ? 1 : 0,
             }}
           />
         </>
@@ -128,6 +125,8 @@ export function SmokeHero() {
           background: "radial-gradient(120% 90% at 50% 55%, rgba(226,226,228,.95), rgba(196,197,200,.92) 55%, rgba(120,122,126,.9) 100%)",
         }}
       />
+      {/* dark veil under the name while the film keeps running */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[#0e0f10] transition-opacity duration-[2000ms]" style={{ opacity: veil }} />
       {/* calm the frame: dark top for the menu, dark bottom into the page */}
       <div
         aria-hidden
@@ -167,14 +166,6 @@ export function SmokeHero() {
         </svg>
       </div>
 
-      {showTitle && quality && (
-        <button
-          onClick={replay}
-          className="glow-ring absolute bottom-6 right-[var(--margin)] inline-flex items-center gap-2 rounded-[4px] bg-white/10 px-3.5 py-2.5 text-[13px] font-semibold text-white/80 hover:bg-white/15"
-        >
-          <RotateCcw className="size-4" /> Ещё раз
-        </button>
-      )}
     </section>
   )
 }
