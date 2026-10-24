@@ -1,98 +1,108 @@
-// Assets for the "drive-by" hero, from real photographs (Wikimedia Commons):
-//  - front.webp   the red Charger SRT Hellcat Widebody, 3/4 front, cut out, night grade
-//  - side.webp    a Charger SRT8 in profile, cut out, recoloured to the same dark red
-//  - wheel-f.webp / wheel-r.webp   its two wheels as round crops, so they can spin
-//  - meta.json    sizes and wheel centres in side.webp pixels
+// Assets for the drive-by hero, from two real photographs of the same black
+// Dodge Challenger (Wikimedia Commons, Pitch Black SXT, 2024):
+//  - front.webp  3/4 front, for the approach
+//  - side.webp   further back and more side-on, for the slide past
+// Both are cut out (see README), cleaned, number plates removed and graded to the
+// monochrome look of the scene. meta.json holds the lamp and wheel points (0…1).
 //   node scripts/make-hero-assets.mjs
 import sharp from "sharp"
 import fs from "node:fs"
 
 const OUT = "public/media/hero"
 fs.mkdirSync(OUT, { recursive: true })
+for (const f of ["wheel-f.webp", "wheel-r.webp"]) fs.rmSync(`${OUT}/${f}`, { force: true })
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v))
 
-async function raw(src) {
-  const { data, info } = await sharp(src).ensureAlpha().raw().toBuffer({ resolveWithObject: true })
-  return { data, w: info.width, h: info.height }
+function inQuad(x, y, q) {
+  let inside = false
+  for (let i = 0, j = q.length - 1; i < q.length; j = i++) {
+    const [xi, yi] = q[i]
+    const [xj, yj] = q[j]
+    if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside
+  }
+  return inside
 }
 
-// ── front: Hellcat 3/4, preview box (1400px wide) x 128–1290, y 400–890
-{
-  const { data, w, h } = await raw(".charger-src3/cut-hellcat.png")
-  const k = w / 1400
-  const box = { x: Math.round(118 * k), y: Math.round(395 * k), w: Math.round(1185 * k), h: Math.round(500 * k) }
-  const out = Buffer.alloc(box.w * box.h * 4)
-  for (let y = 0; y < box.h; y++)
-    for (let x = 0; x < box.w; x++) {
-      const s = ((box.y + y) * w + box.x + x) * 4
-      const o = (y * box.w + x) * 4
-      const r = data[s] / 255, g = data[s + 1] / 255, b = data[s + 2] / 255
-      const l = 0.3 * r + 0.59 * g + 0.11 * b
-      // muted, darker, slightly cooler; keep some red
-      const mix = 0.45
-      out[o] = 255 * clamp(Math.pow(r * (1 - mix) + l * mix, 1.15) * 0.82)
-      out[o + 1] = 255 * clamp(Math.pow(g * (1 - mix) + l * mix, 1.15) * 0.8)
-      out[o + 2] = 255 * clamp(Math.pow(b * (1 - mix) + l * mix, 1.15) * 0.86)
-      out[o + 3] = Math.round(255 * clamp((data[s + 3] / 255 - 0.3) / 0.6))
-    }
-  await sharp(out, { raw: { width: box.w, height: box.h, channels: 4 } }).resize(1400).webp({ quality: 86 }).toFile(`${OUT}/front.webp`)
-  console.log("front", box)
-}
+// Coordinates below are measured on 1400px-wide previews of the cut-outs.
+const JOBS = [
+  {
+    name: "front",
+    src: ".chal-src/cut-front.png",
+    box: { x: 50, y: 360, w: 1300, h: 540 },
+    erase: (x, y) => y < 368 || x > 1338 || (y < 386 && x < 560) || (y < 388 && x > 1012),
+    plate: [
+      [182, 725],
+      [296, 733],
+      [294, 800],
+      [184, 792],
+    ],
+    lamps: [
+      [100, 650, 24],
+      [140, 652, 24],
+      [470, 676, 26],
+      [528, 681, 26],
+    ],
+    rearWheel: [1222, 690],
+  },
+  {
+    name: "side",
+    src: ".chal-src/cut-side.png",
+    box: { x: 185, y: 425, w: 1020, h: 390 },
+    erase: (x, y) => x > 1196 || (x > 1100 && y < 520),
+    plate: [
+      [266, 660],
+      [342, 664],
+      [341, 709],
+      [266, 705],
+    ],
+    lamps: [
+      [205, 616, 19],
+      [237, 618, 19],
+      [467, 626, 20],
+      [500, 628, 20],
+    ],
+    rearWheel: [1095, 700],
+  },
+]
 
-// ── side: SRT8 profile, faces left. Preview (1400 wide) box x 50–1330, y 368–805
 const meta = {}
-{
-  const { data, w, h } = await raw(".side-src/cut-side.png")
-  const k = w / 1400
-  const box = { x: Math.round(48 * k), y: Math.round(366 * k), w: Math.round(1285 * k), h: Math.round(442 * k) }
-  const wheels = [
-    { name: "f", cx: 205 * k - box.x, cy: 660 * k - box.y, r: 96 * k },
-    { name: "r", cx: 1043 * k - box.x, cy: 693 * k - box.y, r: 108 * k },
-  ]
-  const body = Buffer.alloc(box.w * box.h * 4)
-  for (let y = 0; y < box.h; y++)
-    for (let x = 0; x < box.w; x++) {
-      const s = ((box.y + y) * w + box.x + x) * 4
-      const o = (y * box.w + x) * 4
-      const r = data[s] / 255, g = data[s + 1] / 255, b = data[s + 2] / 255
-      const l = 0.3 * r + 0.59 * g + 0.11 * b
-      const inWheel = wheels.some((wh) => Math.hypot(x - wh.cx, y - wh.cy) < wh.r * 0.98)
-      let R, G, B
-      if (inWheel) {
-        R = l * 0.85; G = l * 0.85; B = l * 0.88
-      } else {
-        // grey paint → the same dark wine red as the Hellcat; dark glass stays dark
-        const paint = clamp((l - 0.12) / 0.35)
-        R = l * (1 - paint) * 0.75 + paint * Math.pow(l, 1.2) * 0.92
-        G = l * (1 - paint) * 0.75 + paint * Math.pow(l, 1.2) * 0.3
-        B = l * (1 - paint) * 0.8 + paint * Math.pow(l, 1.2) * 0.38
-      }
-      body[o] = 255 * clamp(R * 0.8)
-      body[o + 1] = 255 * clamp(G * 0.8)
-      body[o + 2] = 255 * clamp(B * 0.84)
-      body[o + 3] = Math.round(255 * clamp((data[s + 3] / 255 - 0.3) / 0.6))
+for (const job of JOBS) {
+  const { data, info } = await sharp(job.src).ensureAlpha().raw().toBuffer({ resolveWithObject: true })
+  const k = info.width / 1400
+  const bx = Math.round(job.box.x * k)
+  const by = Math.round(job.box.y * k)
+  const bw = Math.round(job.box.w * k)
+  const bh = Math.round(job.box.h * k)
+  const out = Buffer.alloc(bw * bh * 4)
+  for (let y = 0; y < bh; y++)
+    for (let x = 0; x < bw; x++) {
+      const s = ((by + y) * info.width + bx + x) * 4
+      const o = (y * bw + x) * 4
+      const px = (bx + x) / k
+      const py = (by + y) / k
+      let a = clamp((data[s + 3] / 255 - 0.3) / 0.6)
+      if (job.erase(px, py)) a = 0
+      let l = (0.3 * data[s] + 0.59 * data[s + 1] + 0.11 * data[s + 2]) / 255
+      // plate → bumper black
+      if (inQuad(px, py, job.plate)) l = 0.09
+      // monochrome, deep blacks, keep the gloss highlights
+      const v = clamp(Math.pow(l, 1.25) * 1.05)
+      out[o] = Math.round(255 * v * 0.98)
+      out[o + 1] = Math.round(255 * v * 0.99)
+      out[o + 2] = Math.round(255 * v)
+      out[o + 3] = Math.round(255 * a)
     }
   const W = 1600
-  const s = W / box.w
-  await sharp(body, { raw: { width: box.w, height: box.h, channels: 4 } }).resize(W).webp({ quality: 86 }).toFile(`${OUT}/side.webp`)
-  meta.side = { w: W, h: Math.round(box.h * s), wheels: [] }
-  for (const wh of wheels) {
-    const size = Math.round(wh.r * 2)
-    const wb = Buffer.alloc(size * size * 4)
-    for (let y = 0; y < size; y++)
-      for (let x = 0; x < size; x++) {
-        const bx = Math.round(wh.cx - wh.r + x)
-        const by = Math.round(wh.cy - wh.r + y)
-        const o = (y * size + x) * 4
-        const d = Math.hypot(x - wh.r, y - wh.r)
-        if (bx < 0 || by < 0 || bx >= box.w || by >= box.h) continue
-        const i = (by * box.w + bx) * 4
-        for (let c = 0; c < 3; c++) wb[o + c] = body[i + c]
-        wb[o + 3] = Math.round(255 * clamp((wh.r - d) / 3)) * (body[i + 3] / 255)
-      }
-    const ws = Math.round(size * s)
-    await sharp(wb, { raw: { width: size, height: size, channels: 4 } }).resize(ws, ws).webp({ quality: 88 }).toFile(`${OUT}/wheel-${wh.name}.webp`)
-    meta.side.wheels.push({ name: wh.name, cx: Math.round(wh.cx * s), cy: Math.round(wh.cy * s), r: Math.round(wh.r * s) })
+  await sharp(out, { raw: { width: bw, height: bh, channels: 4 } })
+    .blur(0.4)
+    .resize(W)
+    .webp({ quality: 88 })
+    .toFile(`${OUT}/${job.name}.webp`)
+  const norm = ([x, y]) => [+((x - job.box.x) / job.box.w).toFixed(4), +((y - job.box.y) / job.box.h).toFixed(4)]
+  meta[job.name] = {
+    aspect: +(bw / bh).toFixed(4),
+    lamps: job.lamps.map(([x, y, r]) => [...norm([x, y]), +(r / job.box.w).toFixed(4)]),
+    rearWheel: norm(job.rearWheel),
   }
 }
 fs.writeFileSync(`${OUT}/meta.json`, JSON.stringify(meta, null, 2))

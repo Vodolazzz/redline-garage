@@ -8,20 +8,26 @@ import { Gear } from "./gear"
 import { ContainerScroll } from "@/components/ui/container-scroll"
 
 /* ───────────── Marquee of trades ───────────── */
+/* ───────────── Promise strip: four quiet facts under the opening shot ───────────── */
 export function TradeMarquee() {
-  const words = ["Диагностика", "ТО", "Тормоза", "ГРМ", "Подвеска", "Электрика", "Кондиционер", "Шиномонтаж", "Детейлинг", "Керамика"]
-  const row = [...words, ...words]
+  const items = [
+    { k: "40 минут", v: "компьютерная диагностика" },
+    { k: "24 месяца", v: "гарантия на работы" },
+    { k: "Видео", v: "с подъёмника каждому клиенту" },
+    { k: "8:00–22:00", v: "ежедневно, без выходных" },
+  ]
   return (
-    <div className="relative overflow-hidden bg-[#e10600] py-5 text-white" aria-hidden>
-      <div className="marquee" style={{ ["--marquee-speed" as string]: "34s" }}>
-        {row.map((w, i) => (
-          <span key={i} className="display flex items-center gap-8 pr-8 text-[clamp(28px,4vw,56px)]">
-            {w}
-            <Gear className="size-[0.7em] animate-[spin_6s_linear_infinite] opacity-80" />
-          </span>
+    <section data-tone="dark" className="dark relative bg-[#141517] text-[#eceae6]" aria-label="Коротко о сервисе">
+      <div className="frame grid grid-cols-2 gap-y-8 py-12 md:grid-cols-4 md:py-14">
+        {items.map((it, i) => (
+          <div key={it.k} data-rise style={{ ["--i" as string]: i }} className="relative pl-5 md:pl-6">
+            <span aria-hidden className="absolute left-0 top-[0.55em] h-[calc(100%-0.6em)] w-px bg-gradient-to-b from-white/35 to-transparent" />
+            <div className="heading text-[clamp(22px,2.2vw,34px)]">{it.k}</div>
+            <div className="mt-1.5 text-[15px] text-white/55">{it.v}</div>
+          </div>
         ))}
       </div>
-    </div>
+    </section>
   )
 }
 
