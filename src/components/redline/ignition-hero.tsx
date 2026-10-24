@@ -280,7 +280,7 @@ export function IgnitionHero() {
       {/* ── giant wordmark that rises behind the parked car */}
       <div
         ref={wordRef}
-        className="pointer-events-none absolute inset-x-0 bottom-[24%] select-none overflow-hidden text-center md:bottom-[23%]"
+        className="pointer-events-none absolute inset-x-0 bottom-[37%] select-none overflow-hidden text-center md:bottom-[23%]"
         style={{ ["--rise" as string]: "0%" }}
         aria-hidden="true"
       >
@@ -306,7 +306,7 @@ export function IgnitionHero() {
       {/* ── the car */}
       <div
         ref={carRef}
-        className="absolute bottom-[19%] left-0 w-[118vw] will-change-transform md:bottom-[17%] md:w-[min(64vw,1040px)]"
+        className="absolute bottom-[19%] left-0 w-[104vw] will-change-transform md:bottom-[17%] md:w-[min(64vw,1040px)]"
         style={{ transform: "translate3d(28vw,0,0)", transformOrigin: "50% 100%" }}
       >
         <div ref={carBodyRef} className="origin-[30%_90%] transition-none">

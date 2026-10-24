@@ -46,7 +46,7 @@ export function Intro() {
       <dl className="mt-[100px] grid grid-cols-2 gap-x-6 gap-y-10 md:flex md:justify-between">
         {facts.map((f, i) => (
           <div key={f.v} data-rise style={{ ["--i" as string]: i }} className="max-w-[220px]">
-            <dt className="heading text-[clamp(26px,3vw,44px)] text-ink">{f.v}</dt>
+            <dt className="heading whitespace-nowrap text-[clamp(24px,2.6vw,40px)] text-ink">{f.v}</dt>
             <dd className="mt-2 text-[14px] leading-snug text-ink-soft">{f.d}</dd>
           </div>
         ))}
@@ -104,8 +104,8 @@ export function Process() {
   return (
     <section id="process" data-tone="dark" className="dark grain relative scroll-mt-16 bg-night py-[160px] text-[#f2f0ec]" aria-labelledby="process-h">
       <div className="frame grid gap-14 md:grid-cols-12">
-        <div className="md:col-span-5">
-          <h2 id="process-h" data-rise className="heading text-[clamp(40px,4.4vw,68px)]">
+        <div className="md:col-span-6">
+          <h2 id="process-h" data-rise className="heading text-[clamp(36px,3.8vw,60px)]">
             Один день из заказ-наряда
           </h2>
           <p data-rise style={{ ["--i" as string]: 1 }} className="mt-8 max-w-[34ch] text-[17px] text-white/80">
@@ -121,7 +121,7 @@ export function Process() {
             Открыть свой заказ-наряд <ArrowUpRight className="size-5" />
           </Link>
         </div>
-        <div className="md:col-span-6 md:col-start-7">
+        <div className="md:col-span-6 md:col-start-7 lg:col-span-5 lg:col-start-8">
           <div
             data-rise
             style={{ ["--i" as string]: 1 }}
@@ -235,7 +235,7 @@ export function Film() {
       />
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,10,11,.85),rgba(10,10,11,.2)_60%,rgba(10,10,11,.1))]" />
       <div className="frame relative flex h-full flex-col justify-end pb-16">
-        <h2 id="film-h" data-rise className="display max-w-[12ch] text-[clamp(44px,8vw,128px)]">
+        <h2 id="film-h" data-rise className="display max-w-[16ch] text-[clamp(40px,6.4vw,108px)]">
           Чиним то, на чём едут быстро
         </h2>
         <div data-rise style={{ ["--i" as string]: 1 }} className="mt-8 flex flex-wrap items-center gap-6">
@@ -259,11 +259,17 @@ export function Film() {
 export function Masters() {
   return (
     <section className="frame py-[160px]" aria-labelledby="masters-h">
-      <h2 id="masters-h" data-rise className="heading text-[clamp(40px,5vw,76px)]">
-        Кто держит
-        <br />
-        <span className="md:pl-[16.6%]">ключ на 10</span>
-      </h2>
+      <div className="grid items-end gap-10 md:grid-cols-12">
+        <h2 id="masters-h" data-rise className="heading text-[clamp(40px,5vw,76px)] md:col-span-7">
+          Кто держит
+          <br />
+          <span className="md:pl-[16.6%]">ключ на 10</span>
+        </h2>
+        <figure data-rise style={{ ["--i" as string]: 1 }} className="relative aspect-[16/10] overflow-hidden md:col-span-5">
+          <Image src="/media/porsche-night.jpg" alt="Красный Porsche 911 ночью на мокрой улице" fill sizes="(max-width: 768px) 100vw, 40vw" className="object-cover transition-transform duration-[1.4s] hover:scale-105" />
+          <figcaption className="absolute bottom-0 left-0 bg-ink/70 px-3 py-1.5 text-[13px] text-white">После ТО — домой по мокрому, без сюрпризов</figcaption>
+        </figure>
+      </div>
       <table className="mt-[72px] w-full border-collapse text-left text-[17px]">
         <thead className="sr-only">
           <tr>
@@ -360,7 +366,7 @@ export function Contact() {
       <div className="frame relative">
         <a
           href={BRAND.phoneHref}
-          className="display block text-[clamp(44px,10.4vw,170px)] leading-[0.9] transition-colors duration-300 hover:text-black"
+          className="display block whitespace-nowrap text-[clamp(30px,8.3vw,150px)] leading-[0.9] transition-colors duration-300 hover:text-black"
           data-cursor="Звонок"
         >
           {BRAND.phone}

@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# REDLINE — автоателье
 
-## Getting Started
+Концепт-сайт автосервиса для портфолио. Красная линия тахометра — 7000 об/мин — стала идеей всего сайта: интро «заводит» машину прокруткой, счётчик оборотов в шапке показывает, сколько страницы вы проехали, а калькулятор поднимает стрелку по мере роста заказа.
 
-First, run the development server:
+**Стек:** Next.js 16 (App Router, Cache Components) · React 19 · TypeScript · Tailwind CSS 4 · shadcn/ui-структура · motion · lucide-react · zod.
+
+## Что внутри
+
+| Страница | Что там |
+| --- | --- |
+| `/` | Лендинг. Интро с блокировкой прокрутки: ворота бокса поднимаются, купе 911 (нарисовано в коде, SVG) делает burnout с дымом и искрами на canvas, стрелка тахометра уходит в красную зону, машина выезжает и встаёт на фоне огромного «REDLINE». Можно включить синтезированный звук мотора (Web Audio), высота тона следует за оборотами. Дальше: бегущая строка, факты, индекс услуг с подсказками по наведению, «заказ-наряд» на чековой ленте, галерея, калькулятор стоимости, видео, мастера, FAQ, контакты с картой. |
+| `/booking` | Запись в 4 шага (машина → работы → дата и время → контакты) с живым черновиком заказ-наряда и предварительной стоимостью. Принимает выбор из калькулятора через `?class=&services=`. |
+| `/feedback` | Жалобы, предложения, благодарности, вопросы: оценка «шестерёнками», номер заказ-наряда, регламент рассмотрения. |
+| `/privacy`, `/terms` | Политика обработки ПД (152-ФЗ) и пользовательское соглашение с гарантией и порядком претензий. |
+| `/film` | Демонстрация компонента `scroll-locked-video-hero`: ралли-видео прокручивается кадр за кадром. |
+| `/admin` | Панель администратора: сводка, заявки и обращения, поиск, фильтры по статусам, карточка со сменой статуса и заметками, удаление, выгрузка CSV для Excel, автообновление. |
+
+Эффекты по всему сайту: кастомный курсор с подписями, искры от болгарки при клике, вкладки и кнопки с вращающейся красной светящейся обводкой, переход между страницами красной шторкой, появление секций, анимированные шестерёнки, перекатывающиеся цифры. Учтён `prefers-reduced-motion`.
+
+## Запуск
 
 ```bash
+npm install
+cp .env.example .env.local   # задайте свой ADMIN_PASSWORD и SESSION_SECRET
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Откройте http://localhost:3000. Админка — http://localhost:3000/admin, демо-пароль по умолчанию `redline7000` (меняется переменной `ADMIN_PASSWORD`; в продакшене обязательно задайте свой и `SESSION_SECRET`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Заявки хранятся в `data/db.json` (папка в `.gitignore`, при первом запуске создаются демо-записи). На хостинге с read-only файловой системой (Vercel) хранилище уходит во временную папку и не переживает перезапуск — для продакшена замените `src/lib/db.ts` на базу данных (Postgres, Supabase и т. п.); интерфейс функций остаётся тем же.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Структура
 
-## Learn More
+```
+src/
+  app/                    страницы и API (route handlers)
+    api/requests          POST заявка на сервис
+    api/feedback          POST жалоба / предложение
+    api/admin/*           вход, выход, список, PATCH/DELETE, CSV
+  components/
+    ui/                   shadcn-компоненты (button, scroll-locked-video-hero, demo)
+    redline/              компоненты сайта: герой, секции, формы, админка
+  hooks/use-scroll-scrub  движок «залоченной» прокрутки, общий для обоих героев
+  lib/                    контент и цены, схемы zod, хранилище, авторизация, дым, звук
+```
 
-To learn more about Next.js, take a look at the following resources:
+Почему `components/ui`: это путь по умолчанию для shadcn CLI (`components.json` → `aliases.ui`). Компоненты, добавленные через `npx shadcn add`, попадают туда же, и импорты `@/components/ui/...` работают без правок.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Фото и видео
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Все снимки и ролик — со свободными лицензиями Wikimedia Commons, авторы указаны в подвале сайта и в `public/media/credits.json`. Это фото «мира» автосервиса, а не самой мастерской: название, адрес, мастера, цены и реквизиты вымышлены.
