@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation"
 import { BRAND } from "@/lib/content"
 
 const CREDITS = [
-  ["“Dodge Challenger SXT LC FL Pitch Black (7, 11)”", "Damian B Oh", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Dodge_Challenger_SXT_LC_FL_Pitch_Black_(7).jpg"],
   ["“Dodge Charger SRT Hellcat Washington DC Metro Area”", "OWS Photography", "CC BY 4.0", "https://commons.wikimedia.org/wiki/File:Dodge_Charger_SRT_Hellcat_Washington_DC_Metro_Area,_USA.jpg"],
   ["“2024 Dodge Charger Daytona Scat Pack in Redeye”", "Elise240SX", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:2024_Dodge_Charger_Daytona_Scat_Pack_in_Redeye,_front_left,_2026-08-30.jpg"],
   ["“Dodge Charger Redline at NAIAS 2012”", "Autoviva", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Dodge_Charger_Redline_at_NAIAS_2012_(6683787507).jpg"],
@@ -75,7 +74,7 @@ export function SiteFooter() {
         </svg>
         <p className="mt-5 text-[13px] leading-relaxed text-white/55">
           © 2026 {BRAND.legal}, ИНН {BRAND.inn}, ОГРН {BRAND.ogrn}. Сайт — концепт для портфолио; цены, мастера и реквизиты условны.
-          Фото и видео (кадры героя смонтированы из этих снимков, вырезаны, затонированы и совмещены): {CREDITS.map(([t, a, l, href], i) => (
+          Видео на первом экране — Pexels (бесплатная лицензия Pexels): «Dynamic nighttime muscle car burnout» и «Moody night drift with muscle car on urban streets». Фото: {CREDITS.map(([t, a, l, href], i) => (
             <span key={href}>
               <a className="underline underline-offset-2 hover:text-white" href={href} target="_blank" rel="noopener noreferrer">{t}</a>{" "}
               — {a}, {l}, Wikimedia Commons{i < CREDITS.length - 1 ? "; " : "."}

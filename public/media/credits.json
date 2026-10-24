@@ -162,51 +162,15 @@
     "saved": "2026-10-24T21:24:16.782Z"
   },
   {
-    "file": "(source) c166758979.jpg",
-    "media": "image",
-    "ref": "commons:166758979",
-    "title": "Dodge Challenger SXT LC FL Pitch Black (11)",
-    "creator": "Damian B Oh",
-    "creatorUrl": null,
-    "date": "2024-06-08",
-    "license": "CC BY-SA 4.0",
-    "licenseCode": "by-sa",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "creditRequired": true,
-    "page": "https://commons.wikimedia.org/wiki/File:Dodge_Challenger_SXT_LC_FL_Pitch_Black_(11).jpg",
-    "via": "Wikimedia Commons",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/5/56/Dodge_Challenger_SXT_LC_FL_Pitch_Black_%2811%29.jpg",
-    "width": 3758,
-    "height": 2818,
-    "bytes": 1271587,
-    "credit": "\"Dodge Challenger SXT LC FL Pitch Black (11)\" by Damian B Oh, CC BY-SA 4.0, via Wikimedia Commons",
-    "notes": [
-      "Share-alike: an altered version (recoloured, combined with other pictures) must be shared under the same licence."
-    ],
-    "saved": "2026-10-24T22:06:02.071Z"
+    "file": "public/media/hero/rear-*.mp4",
+    "title": "Dynamic nighttime muscle car burnout",
+    "page": "https://www.pexels.com/video/dynamic-nighttime-muscle-car-burnout-30843746/",
+    "license": "Pexels License"
   },
   {
-    "file": "(source) c166758976.jpg",
-    "media": "image",
-    "ref": "commons:166758976",
-    "title": "Dodge Challenger SXT LC FL Pitch Black (7)",
-    "creator": "Damian B Oh",
-    "creatorUrl": null,
-    "date": "2024-06-08",
-    "license": "CC BY-SA 4.0",
-    "licenseCode": "by-sa",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "creditRequired": true,
-    "page": "https://commons.wikimedia.org/wiki/File:Dodge_Challenger_SXT_LC_FL_Pitch_Black_(7).jpg",
-    "via": "Wikimedia Commons",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/Dodge_Challenger_SXT_LC_FL_Pitch_Black_%287%29.jpg/3840px-Dodge_Challenger_SXT_LC_FL_Pitch_Black_%287%29.jpg",
-    "width": 3840,
-    "height": 2880,
-    "bytes": 2600277,
-    "credit": "\"Dodge Challenger SXT LC FL Pitch Black (7)\" by Damian B Oh, CC BY-SA 4.0, via Wikimedia Commons",
-    "notes": [
-      "Share-alike: an altered version (recoloured, combined with other pictures) must be shared under the same licence."
-    ],
-    "saved": "2026-10-24T22:06:06.022Z"
+    "file": "public/media/hero/side-*.mp4",
+    "title": "Moody night drift with muscle car on urban streets",
+    "page": "https://www.pexels.com/video/moody-night-drift-with-muscle-car-on-urban-streets-30843744/",
+    "license": "Pexels License"
   }
 ]
