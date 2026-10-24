@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "REDLINE — автоателье",
     description: "Ремонт и обслуживание машин, которые слышно.",
-    images: ["/media/porsche-night.jpg"],
+    images: ["/media/parts/body.jpg"],
     locale: "ru_RU",
     type: "website",
   },

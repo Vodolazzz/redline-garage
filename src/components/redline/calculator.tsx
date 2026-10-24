@@ -139,10 +139,10 @@ export function Calculator() {
           <div className="flex items-start justify-between">
             <div>
               <div className="text-[15px] text-white/60">Работы под ключ</div>
-              <div className="heading mt-2 text-[clamp(34px,3.4vw,48px)] tabular">
+              <div className="heading mt-2 whitespace-nowrap text-[clamp(26px,2.5vw,40px)] tabular">
                 <Rolling value={total} format={formatRub} />
               </div>
-              <div className="mt-2 text-[15px] text-white/70 tabular">
+              <div className="mt-2 whitespace-nowrap text-[14px] text-white/70 tabular">
                 {chosen.length} {plural(chosen.length, ["работа", "работы", "работ"])} · ≈ {hours.toLocaleString("ru-RU")} ч в боксе
               </div>
             </div>
@@ -154,7 +154,7 @@ export function Calculator() {
               <li key={s.id} className="flex items-baseline animate-in fade-in slide-in-from-right-2 duration-300">
                 <span className="text-white/85">{s.name}</span>
                 <span className="leader" />
-                <span className="tabular">{formatRub(priceFor(s, carClass))}</span>
+                <span className="whitespace-nowrap tabular">{formatRub(priceFor(s, carClass))}</span>
               </li>
             ))}
           </ul>

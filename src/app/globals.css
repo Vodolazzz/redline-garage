@@ -189,9 +189,11 @@
   inherits: false;
   initial-value: 0deg;
 }
-.glow-ring {
-  position: relative;
-  isolation: isolate;
+@layer components {
+  .glow-ring {
+    position: relative;
+    isolation: isolate;
+  }
 }
 .glow-ring::before {
   content: "";
@@ -237,14 +239,16 @@
 }
 
 /* Button with sweep of light */
-.btn-red {
-  position: relative;
-  overflow: hidden;
-  background: var(--red);
-  color: #fff;
-  transition:
-    background-color 0.3s ease,
-    transform 0.3s var(--ease-out-expo);
+@layer components {
+  .btn-red {
+    position: relative;
+    overflow: hidden;
+    background: var(--red);
+    color: #fff;
+    transition:
+      background-color 0.3s ease,
+      transform 0.3s var(--ease-out-expo);
+  }
 }
 .btn-red::after {
   content: "";

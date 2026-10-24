@@ -43,3 +43,7 @@ next-env.d.ts
 # local data store
 /data
 .taste-skill
+
+# source photos for scripts/make-frames.mjs (download again, see README)
+/.charger-src
+/.charger-src2

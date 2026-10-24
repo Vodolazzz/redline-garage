@@ -1,17 +1,18 @@
-import { IgnitionHero } from "@/components/redline/ignition-hero"
-import { Contact, Faq, Film, Intro, Masters, Pricing, Process, Services, Showcase, TradeMarquee } from "@/components/redline/sections"
+import { ChargerHero } from "@/components/redline/charger-hero"
+import { Teardown } from "@/components/redline/teardown"
+import { ServicesTrack } from "@/components/redline/services-track"
+import { Contact, Faq, Intro, Masters, Pricing, Process, TradeMarquee } from "@/components/redline/sections"
 
 export default function Home() {
   return (
     <main>
-      <IgnitionHero />
+      <ChargerHero />
       <TradeMarquee />
+      <Teardown />
       <Intro />
-      <Services />
+      <ServicesTrack />
       <Process />
-      <Showcase />
       <Pricing />
-      <Film />
       <Masters />
       <Faq />
       <Contact />

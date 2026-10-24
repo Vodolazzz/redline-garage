@@ -5,6 +5,7 @@ import { BRAND, MASTERS } from "@/lib/content"
 import { ServicesIndex } from "./services-index"
 import { Calculator } from "./calculator"
 import { Gear } from "./gear"
+import { ContainerScroll } from "@/components/ui/container-scroll"
 
 /* ───────────── Marquee of trades ───────────── */
 export function TradeMarquee() {
@@ -35,7 +36,7 @@ export function Intro() {
   return (
     <section className="frame relative pb-[120px] pt-[140px]" aria-labelledby="intro-h">
       <div className="grid gap-10 md:grid-cols-12">
-        <h2 id="intro-h" data-rise className="heading text-[clamp(40px,5vw,76px)] md:col-span-7">
+        <h2 id="intro-h" data-rise className="heading text-[clamp(26px,5vw,76px)] md:col-span-7">
           Мастерская на Электрозаводской
         </h2>
         <p data-rise style={{ ["--i" as string]: 1 }} className="max-w-[34ch] self-end text-[17px] md:col-span-4 md:col-start-9">
@@ -157,100 +158,27 @@ export function Process() {
   )
 }
 
-/* ───────────── Showcase: band of unequal panels ───────────── */
-export function Showcase() {
-  const panels = [
-    { src: "/media/porsche-991.jpg", alt: "Серый Porsche 911 Carrera 4S на треке", grow: 5, title: "Спорткары — наш профиль" },
-    { src: "/media/brembo.jpg", alt: "Тормозной диск и суппорт Brembo крупным планом", grow: 2 },
-    { src: "/media/garage-restoration.jpg", alt: "Жук на подъёмнике в мастерской во время реставрации", grow: 3 },
-    { src: "/media/tools.jpg", alt: "Набор инструментов механика на верстаке", grow: 2 },
-  ]
-  return (
-    <section className="py-[140px]" aria-labelledby="show-h">
-      <h2 id="show-h" data-rise className="heading frame mb-16 text-[clamp(30px,3vw,44px)] md:pl-[16.6%]">
-        Что заезжает к нам
-      </h2>
-      <div className="grid h-[84svh] grid-cols-[64fr_36fr] grid-rows-2 md:flex md:h-[68svh]">
-        {panels.map((p) => (
-          <figure
-            key={p.src}
-            className="group relative overflow-hidden transition-[flex-grow] duration-500 ease-out md:hover:!grow-[6] max-md:[&:nth-child(3)]:order-4 max-md:[&:nth-child(4)]:order-3"
-            style={{ flexGrow: p.grow, flexBasis: 0 }}
-          >
-            <Image
-              src={p.src}
-              alt={p.alt}
-              fill
-              sizes="(max-width: 768px) 60vw, 40vw"
-              className="object-cover transition-transform duration-[1.4s] ease-out group-hover:scale-[1.06]"
-            />
-            <div className="absolute inset-0 bg-[#e10600] opacity-0 mix-blend-multiply transition-opacity duration-500 group-hover:opacity-25" />
-            {p.title && (
-              <figcaption className="absolute left-0 top-0 max-w-[16ch] bg-gradient-to-br from-black/60 to-transparent p-6 text-[clamp(20px,2vw,28px)] font-bold leading-tight text-white">
-                {p.title}
-              </figcaption>
-            )}
-          </figure>
-        ))}
-      </div>
-      <p className="frame mt-5 text-[16px] text-ink-soft">
-        От Golf до 911 GT3: обслуживаем всё, но лучше всего знаем заднемоторные и полноприводные спорткары.
-      </p>
-    </section>
-  )
-}
-
 /* ───────────── Pricing: one sentence + the calculator ───────────── */
 export function Pricing() {
   return (
-    <section id="calc" className="relative scroll-mt-16 bg-paper-2 py-[140px]" aria-labelledby="calc-h">
-      <div className="frame">
-        <h2 id="calc-h" data-rise className="heading max-w-[18ch] text-[clamp(36px,5.4vw,84px)]">
-          ТО для вашей машины — от{" "}
-          <span className="inline-block bg-[#e10600] px-[0.15em] text-white">9 900 ₽</span>
-        </h2>
-        <p data-rise style={{ ["--i" as string]: 1 }} className="mt-8 max-w-[52ch] text-[19px]">
-          Цена зависит от класса машины и набора работ. Соберите свой список — увидите итог и время в боксе до того, как
-          приедете. Запчасти считаем отдельно, по чеку.
-        </p>
-        <Calculator />
-      </div>
-    </section>
-  )
-}
-
-/* ───────────── Film: a real clip as a moving picture ───────────── */
-export function Film() {
-  return (
-    <section data-tone="dark" className="dark relative h-[86svh] overflow-hidden bg-night text-white" aria-labelledby="film-h">
-      <video
-        className="absolute inset-0 h-full w-full scale-[1.04] object-cover"
-        src="/media/porsche-997-rally.webm"
-        poster="/media/porsche-997-rally-poster.jpg"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-      />
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,10,11,.85),rgba(10,10,11,.2)_60%,rgba(10,10,11,.1))]" />
-      <div className="frame relative flex h-full flex-col justify-end pb-16">
-        <h2 id="film-h" data-rise className="display max-w-[16ch] text-[clamp(40px,6.4vw,108px)]">
-          Чиним то, на чём едут быстро
-        </h2>
-        <div data-rise style={{ ["--i" as string]: 1 }} className="mt-8 flex flex-wrap items-center gap-6">
-          <p className="max-w-[40ch] text-[17px] text-white/85">
-            Мы готовим машины и к городу, и к треку. Хотите увидеть, как 911 уходит в поворот, — прокрутите заезд кадр за
-            кадром.
-          </p>
-          <Link
-            href="/film"
-            className="glow-ring inline-flex h-12 items-center gap-2 rounded-[4px] bg-white px-5 text-[16px] font-bold text-ink transition-colors hover:bg-[#e10600] hover:text-white"
-          >
-            Смотреть заезд <ArrowUpRight className="size-4" />
-          </Link>
+    <section id="calc" className="relative scroll-mt-16 overflow-hidden bg-night" data-tone="dark" aria-labelledby="calc-h">
+      <ContainerScroll
+        titleComponent={
+          <div className="dark px-4 text-[#f2f0ec]">
+            <p className="text-[19px] font-semibold text-white/70">Соберите ремонт сами</p>
+            <h2 id="calc-h" className="heading mx-auto mt-2 text-[clamp(36px,5.6vw,88px)]">
+              ТО от <span className="inline-block bg-[#e10600] px-[0.15em] text-white">9 900 ₽</span>
+            </h2>
+            <p className="mx-auto mt-5 max-w-[52ch] text-[17px] text-white/70">
+              Класс машины, работы, итог и время в боксе — до того, как приедете. Запчасти считаем отдельно, по чеку.
+            </p>
+          </div>
+        }
+      >
+        <div className="max-h-[78svh] overflow-y-auto px-4 pb-8 md:px-8 [&>div]:mt-6">
+          <Calculator />
         </div>
-      </div>
+      </ContainerScroll>
     </section>
   )
 }
@@ -266,8 +194,8 @@ export function Masters() {
           <span className="md:pl-[16.6%]">ключ на 10</span>
         </h2>
         <figure data-rise style={{ ["--i" as string]: 1 }} className="relative aspect-[16/10] overflow-hidden md:col-span-5">
-          <Image src="/media/porsche-night.jpg" alt="Красный Porsche 911 ночью на мокрой улице" fill sizes="(max-width: 768px) 100vw, 40vw" className="object-cover transition-transform duration-[1.4s] hover:scale-105" />
-          <figcaption className="absolute bottom-0 left-0 bg-ink/70 px-3 py-1.5 text-[13px] text-white">После ТО — домой по мокрому, без сюрпризов</figcaption>
+          <Image src="/media/parts/rear.jpg" alt="Чёрный Dodge Charger Daytona сзади" fill sizes="(max-width: 768px) 100vw, 40vw" className="object-cover transition-transform duration-[1.4s] hover:scale-105" />
+          <figcaption className="absolute bottom-0 left-0 bg-ink/70 px-3 py-1.5 text-[13px] text-white">Charger Daytona после диагностики</figcaption>
         </figure>
       </div>
       <table className="mt-[72px] w-full border-collapse text-left text-[17px]">

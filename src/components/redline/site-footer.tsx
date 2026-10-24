@@ -5,13 +5,15 @@ import { usePathname } from "next/navigation"
 import { BRAND } from "@/lib/content"
 
 const CREDITS = [
-  ["“2013 Porsche 911 Carrera 4S (991)”", "David Villarreal Fernández", "CC BY-SA 2.0", "https://commons.wikimedia.org/w/index.php?curid=29171275"],
-  ["“Brembo Disc brake”", "Malsa", "CC BY-SA 1.0", "https://commons.wikimedia.org/w/index.php?curid=12146545"],
-  ["“Classic car restoration project…”", "Shixart1985", "CC BY 2.0", "https://commons.wikimedia.org/w/index.php?curid=186889571"],
-  ["“Assortment of tools”", "Lucia Obst (WMDE)", "CC BY-SA 4.0", "https://commons.wikimedia.org/w/index.php?curid=112838043"],
-  ["“Porsche at night”", "Ben", "CC BY-SA 2.0", "https://commons.wikimedia.org/w/index.php?curid=66491271"],
-  ["“Porsche 997 GT3 — 48 Rallye Rias Baixas” (видео)", "Jesus Dieguez Fernandez", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Porsche_997_GT3_-_48_Rallye_Internacional_Rias_Baixas.ogv"],
+  ["“2024 Dodge Charger Daytona Scat Pack in Redeye”", "Elise240SX", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:2024_Dodge_Charger_Daytona_Scat_Pack_in_Redeye,_front_left,_2026-08-30.jpg"],
+  ["“Dodge Charger Redline at NAIAS 2012”", "Autoviva", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Dodge_Charger_Redline_at_NAIAS_2012_(6683787507).jpg"],
+  ["“Dodge Charger SRT Hellcat moteur”", "Zytonits", "CC BY-SA 2.0", "https://commons.wikimedia.org/wiki/File:Dodge_Charger_SRT_Hellcat_moteur_(24486213025).jpg"],
+  ["“2019 Dodge Charger interior”", "deathpallie325", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:2019_Dodge_Charger_interior.jpg"],
+  ["“2018 Dodge Charger Scat Pack”", "Greg Gjerdingen", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:2018_Dodge_Charger_Scat_Pack_(2).jpg"],
+  ["“Dodge Charger Daytona (2024) MYLE Festival 2025”", "Alexander Migl", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Dodge_Charger_Daytona_(2024)_MYLE_Festival_2025_DSC_9392.jpg"],
+  ["“Porsche 997 GT3 — 48 Rallye Rias Baixas” (видео, /film)", "Jesus Dieguez Fernandez", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Porsche_997_GT3_-_48_Rallye_Internacional_Rias_Baixas.ogv"],
 ]
+
 
 export function SiteFooter() {
   const pathname = usePathname()
@@ -71,7 +73,7 @@ export function SiteFooter() {
         </svg>
         <p className="mt-5 text-[13px] leading-relaxed text-white/55">
           © 2026 {BRAND.legal}, ИНН {BRAND.inn}, ОГРН {BRAND.ogrn}. Сайт — концепт для портфолио; цены, мастера и реквизиты условны.
-          Фото и видео: {CREDITS.map(([t, a, l, href], i) => (
+          Фото и видео (кадры героя смонтированы из этих снимков, вырезаны, затонированы и совмещены): {CREDITS.map(([t, a, l, href], i) => (
             <span key={href}>
               <a className="underline underline-offset-2 hover:text-white" href={href} target="_blank" rel="noopener noreferrer">{t}</a>{" "}
               — {a}, {l}, Wikimedia Commons{i < CREDITS.length - 1 ? "; " : "."}
