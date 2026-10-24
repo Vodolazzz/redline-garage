@@ -146,6 +146,24 @@ export function useScrollScrub(
       if (feed(d)) e.preventDefault()
     }
 
+    // In-page links (#services, #calc…) must work while the scene holds the page:
+    // finish the scene, release, then let the jump happen.
+    const finishForJump = () => {
+      if (!locked) return
+      target = current = 1
+      releaseLock()
+    }
+    const onClickCapture = (e: MouseEvent) => {
+      const a = (e.target as HTMLElement | null)?.closest?.("a[href*='#']")
+      if (a) finishForJump()
+    }
+    const onHash = () => {
+      finishForJump()
+      document.getElementById(window.location.hash.slice(1))?.scrollIntoView()
+    }
+    document.addEventListener("click", onClickCapture, true)
+    window.addEventListener("hashchange", onHash)
+
     window.addEventListener("wheel", onWheel, { passive: false })
     window.addEventListener("touchstart", onTouchStart, { passive: true })
     window.addEventListener("touchmove", onTouchMove, { passive: false })
@@ -171,6 +189,9 @@ export function useScrollScrub(
 
     let last = current
     function frame() {
+      // dev-only hook for screenshots: window.__scrubAt = 0.5 pins the scene
+      const pinned = process.env.NODE_ENV !== "production" ? (window as { __scrubAt?: number }).__scrubAt : undefined
+      if (typeof pinned === "number") target = current = pinned
       current += (target - current) * smoothing
       if (Math.abs(target - current) < 0.0004) current = target
       const velocity = current - last
@@ -182,6 +203,8 @@ export function useScrollScrub(
     rafId = requestAnimationFrame(frame)
 
     return () => {
+      document.removeEventListener("click", onClickCapture, true)
+      window.removeEventListener("hashchange", onHash)
       window.removeEventListener("wheel", onWheel)
       window.removeEventListener("touchstart", onTouchStart)
       window.removeEventListener("touchmove", onTouchMove)

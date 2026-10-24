@@ -109,6 +109,10 @@
     -webkit-text-size-adjust: 100%;
     scrollbar-color: var(--red) var(--night);
   }
+  html,
+  body {
+    overflow-x: clip;
+  }
   body {
     @apply bg-background text-foreground;
     font-size: var(--step-body);
@@ -203,7 +207,7 @@
   mask-composite: exclude;
   opacity: 0;
   transition: opacity 0.35s ease;
-  animation: spin 2.4s linear infinite;
+  animation: ring-spin 2.4s linear infinite;
   pointer-events: none;
   z-index: -1;
 }
@@ -226,7 +230,7 @@
 .glow-ring[data-active="true"]::after {
   opacity: 1;
 }
-@keyframes spin {
+@keyframes ring-spin {
   to {
     --spin: 360deg;
   }

@@ -15,7 +15,8 @@ const MAX = 8000
 
 function polar(r: number, deg: number) {
   const a = ((deg - 90) * Math.PI) / 180
-  return [Math.cos(a) * r, Math.sin(a) * r] as const
+  const round = (n: number) => Math.round(n * 100) / 100
+  return [round(Math.cos(a) * r), round(Math.sin(a) * r)] as const
 }
 
 function arc(r: number, from: number, to: number) {

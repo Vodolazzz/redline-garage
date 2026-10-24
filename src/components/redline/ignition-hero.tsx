@@ -32,6 +32,7 @@ export function IgnitionHero() {
   const sectionRef = useRef<HTMLElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const doorRef = useRef<HTMLDivElement>(null)
+  const bayBoxRef = useRef<HTMLDivElement>(null)
   const bayRef = useRef<HTMLDivElement>(null)
   const carRef = useRef<HTMLDivElement>(null)
   const carBodyRef = useRef<HTMLDivElement>(null)
@@ -83,6 +84,7 @@ export function IgnitionHero() {
     // ── door and bay light
     const door = easeInOut(range(p, 0.03, 0.22))
     if (doorRef.current) doorRef.current.style.transform = `translateY(${-door * 100}%)`
+    if (bayBoxRef.current) bayBoxRef.current.style.opacity = String(1 - 0.65 * range(p, 0.62, 0.82))
     if (bayRef.current) {
       const flicker = p > 0.02 && p < 0.08 ? (Math.sin(p * 900) > 0 ? 1 : 0.35) : 1
       bayRef.current.style.opacity = String(clamp(p / 0.06) * flicker)
@@ -105,8 +107,23 @@ export function IgnitionHero() {
     const dive = Math.sin(range(p, 0.56, 0.68) * Math.PI) * 3.2 // nose dive on the stop
     const squat = burning ? -1.6 : 0
 
+    // deeper in the bay the car sits smaller, so it fits behind the door
+    const lift = -H * (narrow ? 0.11 : 0.13) * (1 - launch)
+    const scale = (narrow ? 0.62 : 0.74) + (1 - (narrow ? 0.62 : 0.74)) * launch
     if (carRef.current) {
-      carRef.current.style.transform = `translate3d(${x - carW / 2}px, ${shake}px, 0)`
+      // inside the bay the wheels stand on the bay floor (30%), then roll forward onto the apron
+      carRef.current.style.transform = `translate3d(${x - carW / 2}px, ${shake + lift}px, 0) scale(${scale})`
+      // hidden behind the roller door until it rises
+      const bay = bayBoxRef.current?.getBoundingClientRect()
+      const section = sectionRef.current?.getBoundingClientRect()
+      if (bay && section && launch < 0.3) {
+        const doorBottom = bay.top + bay.height * (1 - door) - section.top
+        const carTop = carRef.current.offsetTop + lift + carRef.current.offsetHeight * (1 - scale)
+        const clip = Math.max(0, (doorBottom - carTop) / scale)
+        carRef.current.style.clipPath = clip > 0 ? `inset(${clip}px -50% -20% -50%)` : "none"
+      } else {
+        carRef.current.style.clipPath = "none"
+      }
     }
     if (carBodyRef.current) carBodyRef.current.style.transform = `rotate(${dive + squat}deg)`
 
@@ -133,8 +150,8 @@ export function IgnitionHero() {
 
     // ── smoke: rear tyre contact patch in stage px
     if (field) {
-      const rearX = x - carW / 2 + (carW * 255) / 1000
-      const groundY = (carRef.current?.offsetTop || H * 0.6) + (carW * 0.38 * 350) / 380
+      const rearX = x + (carW * (255 - 500) * scale) / 1000
+      const groundY = (carRef.current?.offsetTop || H * 0.6) + (carRef.current?.offsetHeight || carW * 0.38) + lift - (carW * 0.38 * 30 * scale) / 380
       const moving = Math.abs(dx) > 0.5 || Math.abs(velocity) > 0.0005
       if (burning && moving) {
         field.emit(rearX, groundY, narrow ? 2 : 4, 1, -1)
@@ -215,7 +232,7 @@ export function IgnitionHero() {
       <div className="absolute inset-x-0 bottom-[30%] h-px bg-white/10" />
 
       {/* ── garage bay on the left */}
-      <div className="absolute bottom-[30%] left-[-8vw] h-[58%] w-[64vw] md:left-[2vw] md:w-[50vw]">
+      <div ref={bayBoxRef} className="absolute bottom-[30%] left-[-8vw] h-[58%] w-[64vw] md:left-[2vw] md:w-[50vw]">
         <div className="absolute inset-0 overflow-hidden bg-[#140303]">
           <div
             ref={bayRef}
@@ -263,13 +280,13 @@ export function IgnitionHero() {
       {/* ── giant wordmark that rises behind the parked car */}
       <div
         ref={wordRef}
-        className="pointer-events-none absolute inset-x-0 bottom-[22%] select-none overflow-hidden text-center md:bottom-[18%]"
+        className="pointer-events-none absolute inset-x-0 bottom-[24%] select-none overflow-hidden text-center md:bottom-[23%]"
         style={{ ["--rise" as string]: "0%" }}
         aria-hidden="true"
       >
         <span
-          className="display block translate-y-[var(--rise)] text-[23vw] leading-[0.78] text-[#e10600] md:text-[21vw]"
-          style={{ WebkitTextStroke: "0px", textShadow: "0 0 60px rgba(225,6,0,.35)" }}
+          className="display block translate-y-[var(--rise)] text-[16.5vw] leading-[0.78] text-[#f2f0ec] md:text-[15vw]"
+          style={{ textShadow: "0 0 80px rgba(225,6,0,.55)" }}
         >
           REDLINE
         </span>
@@ -290,7 +307,7 @@ export function IgnitionHero() {
       <div
         ref={carRef}
         className="absolute bottom-[19%] left-0 w-[118vw] will-change-transform md:bottom-[17%] md:w-[min(64vw,1040px)]"
-        style={{ transform: "translate3d(28vw,0,0)" }}
+        style={{ transform: "translate3d(28vw,0,0)", transformOrigin: "50% 100%" }}
       >
         <div ref={carBodyRef} className="origin-[30%_90%] transition-none">
           <Car911 frontWheelRef={frontWheel} rearWheelRef={rearWheel} headlightRef={headlight} className="h-auto w-full" />
@@ -308,7 +325,7 @@ export function IgnitionHero() {
             ref={(el) => {
               captionRefs.current[i] = el
             }}
-            className="heading absolute inset-x-[var(--margin)] max-w-[22ch] text-[clamp(26px,3.6vw,56px)] opacity-0 md:left-[34vw]"
+            className="heading absolute inset-x-[var(--margin)] max-w-[18ch] text-[clamp(26px,3.2vw,50px)] opacity-0 md:left-[55vw]"
           >
             {c.text}
           </p>
@@ -317,8 +334,8 @@ export function IgnitionHero() {
 
       {/* ── final content (also the no-JS state) */}
       <div className="absolute inset-x-0 top-[84px] frame md:top-[104px]">
-        <div className="max-w-[640px]">
-          <h1 data-final className="heading text-[clamp(30px,4.4vw,64px)]">
+        <div className="max-w-[880px]">
+          <h1 data-final className="heading max-w-[18ch] text-[clamp(30px,3.9vw,60px)]">
             Автоателье для машин, которые слышно
           </h1>
           <p data-final className="mt-6 max-w-[46ch] text-[var(--step-lead)] leading-snug text-white/80">
@@ -343,7 +360,7 @@ export function IgnitionHero() {
       </div>
 
       {/* ── HUD: tach + sound */}
-      <div data-final className="absolute bottom-5 left-[var(--margin)] flex items-end gap-4 md:bottom-8">
+      <div className="absolute bottom-5 left-[var(--margin)] flex items-end gap-4 md:bottom-8">
         <Tach ref={tach} size={112} />
         <div className="hidden pb-3 text-[14px] leading-tight text-white/70 sm:block">
           <div className="font-bold text-white">Открыто 8:00–22:00</div>
@@ -362,7 +379,7 @@ export function IgnitionHero() {
       {/* ── scroll hint */}
       <div
         ref={hintRef}
-        className="pointer-events-none absolute inset-x-0 bottom-[38%] flex flex-col items-center gap-3 text-center transition-opacity duration-500 md:bottom-auto md:top-[44%]"
+        className="pointer-events-none absolute inset-x-0 top-[22%] flex flex-col items-center gap-3 text-center transition-opacity duration-500 md:inset-x-auto md:right-[7vw] md:top-[38%] md:items-start md:text-left"
       >
         <p className="heading text-[clamp(22px,2.6vw,40px)]">Крутите колесо — заведём</p>
         <span className="relative h-10 w-6 rounded-full border-2 border-white/60">
