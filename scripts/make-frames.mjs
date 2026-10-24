@@ -1,3 +1,4 @@
+// (Earlier hero film; now used for the x-ray cut-outs of the teardown section: CUTOUTS_ONLY=1.)
 // Builds the full-screen scroll film for the hero from real photographs (Wikimedia Commons):
 // a red 2021–22 Charger SRT Hellcat Widebody cut out and parked on a wet night street,
 // a slow push-in, an x-ray scan that turns the body into a ghost and shows the real
