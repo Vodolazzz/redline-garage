@@ -57,7 +57,7 @@ export function SiteFx() {
       x = e.clientX
       y = e.clientY
       const t = (e.target as HTMLElement | null)?.closest<HTMLElement>("a, button, summary, label, [role='button'], [data-cursor]")
-      targetScale = t ? 2.4 : 1
+      targetScale = t ? 1.45 : 1
       const text = t?.dataset.cursor ?? ""
       if (label.current && label.current.textContent !== text) label.current.textContent = text
       ring.current?.classList.toggle("is-hover", Boolean(t))
@@ -154,9 +154,9 @@ export function SiteFx() {
         <div ref={dot} className="absolute -ml-[3px] -mt-[3px] size-[6px] rounded-full bg-[#e10600]" />
         <div
           ref={ring}
-          className="absolute -ml-4 -mt-4 flex size-8 items-center justify-center rounded-full border-[1.5px] border-[#e10600] shadow-[0_0_14px_rgba(225,6,0,.45)] transition-[background-color,border-color] duration-300 [&.is-hover]:border-transparent [&.is-hover]:bg-[#e10600]/90"
+          className="absolute -ml-[13px] -mt-[13px] flex size-[26px] items-center justify-center rounded-full border-[1.5px] border-[#e10600]/80 transition-[background-color,border-color] duration-300 [&.is-hover]:border-[#e10600] [&.is-hover]:bg-[#e10600]/12"
         >
-          <span ref={label} className="whitespace-nowrap text-[5px] font-bold uppercase text-white" />
+          <span ref={label} className="hidden" />
         </div>
       </div>
     </>

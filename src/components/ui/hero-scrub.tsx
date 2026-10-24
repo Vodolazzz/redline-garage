@@ -15,8 +15,10 @@ const CARD_START_SCALE_MOBILE = 0.82;
 export type HeroScrubProps = {
   frameCount: number;
   frameUrl: (index: number) => string;
-  titleTop: string;
-  titleBottom: string;
+  titleTop?: string;
+  titleBottom?: string;
+  /** Full-bleed film: the canvas covers the whole screen, no card, no titles. */
+  fullscreen?: boolean;
   bgClassName?: string;
   accentHex?: string;
   defaultAspect?: number;
@@ -45,8 +47,9 @@ function usePrefersReducedMotion() {
 export function HeroScrub({
   frameCount,
   frameUrl,
-  titleTop,
-  titleBottom,
+  titleTop = "",
+  titleBottom = "",
+  fullscreen = false,
   bgClassName = "bg-black",
   accentHex = "#3a9b8a",
   defaultAspect = 16 / 9,
@@ -196,7 +199,7 @@ export function HeroScrub({
         lastDrawnRef.current = useIdx;
       };
 
-      gsap.set(cardRef.current, { scale: startScale(), transformOrigin: "50% 50%" });
+      if (!fullscreen) gsap.set(cardRef.current, { scale: startScale(), transformOrigin: "50% 50%" });
 
       const master = gsap.timeline({
         scrollTrigger: {
@@ -207,7 +210,9 @@ export function HeroScrub({
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             const p = self.progress;
-            const mapped = gsap.utils.clamp(0, 1, (p - 0.15) / 0.63);
+            const mapped = fullscreen
+              ? gsap.utils.clamp(0, 1, (p - 0.02) / 0.9)
+              : gsap.utils.clamp(0, 1, (p - 0.15) / 0.63);
             const frameIdx = Math.min(frameCount - 1, Math.floor(mapped * frameCount));
             drawFrame(frameIdx);
             onProgressRef.current?.(p);
@@ -215,6 +220,12 @@ export function HeroScrub({
         },
       });
 
+      if (fullscreen) {
+        // the film itself carries the motion; keep the timeline the full length of the section
+        master.to({}, { duration: 1 }, 0);
+        ScrollTrigger.refresh();
+        return;
+      }
       master.to(cardRef.current, { scale: 1, ease: "power2.out", duration: 0.15 }, 0);
       master.to(titleTopRef.current, {
         x: () => (window.innerWidth < 768 ? "-70vw" : "-60vw"),
@@ -245,7 +256,7 @@ export function HeroScrub({
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [ready, framesOk, reduced, aspect, frameCount]);
+  }, [ready, framesOk, reduced, aspect, frameCount, fullscreen]);
 
   // Tall section + inner sticky div = same visual as ScrollTrigger pin, without needing pin
   const tallHeight = `${(PIN_VH_MULTIPLE + 1) * 100}vh`;
@@ -271,24 +282,24 @@ export function HeroScrub({
         }} />
 
         <div className="relative z-10 flex h-full w-full flex-col items-center justify-center gap-3 md:gap-4">
-          <h2 ref={titleTopRef} aria-hidden className={`font-black uppercase ${titleClassName}`} style={{
+          {!fullscreen && <h2 ref={titleTopRef} aria-hidden className={`font-black uppercase ${titleClassName}`} style={{
             fontSize: titleFontSize, lineHeight: 0.85, letterSpacing: "-0.04em",
-          }}>{titleTop}</h2>
+          }}>{titleTop}</h2>}
 
-          <div ref={cardRef} className="relative overflow-hidden rounded-[12px] shadow-[0_20px_80px_rgba(0,0,0,0.55)] ring-1 ring-white/10 will-change-transform md:rounded-[16px]" style={{
+          <div ref={cardRef} className={fullscreen ? "absolute inset-0 overflow-hidden" : "relative overflow-hidden rounded-[12px] shadow-[0_20px_80px_rgba(0,0,0,0.55)] ring-1 ring-white/10 will-change-transform md:rounded-[16px]"} style={fullscreen ? undefined : {
             width: `min(96vw, calc(72svh * ${aspect}))`,
             height: `min(72svh, 96vw / ${aspect})`,
             aspectRatio: aspect,
           }}>
-            <div aria-hidden className="pointer-events-none absolute inset-0 z-20 shadow-[inset_0_0_120px_rgba(0,0,0,0.45)]" />
+            {!fullscreen && <div aria-hidden className="pointer-events-none absolute inset-0 z-20 shadow-[inset_0_0_120px_rgba(0,0,0,0.45)]" />}
             {framesOk && (
-              <canvas ref={canvasRef} aria-hidden className="absolute inset-0 h-full w-full object-cover" />
+              <canvas ref={canvasRef} aria-hidden className={`absolute inset-0 h-full w-full ${fullscreen ? "object-contain max-md:scale-[1.6] max-md:[mask-image:linear-gradient(180deg,transparent_37%,#000_42%,#000_58%,transparent_63%)] md:object-cover" : "object-cover"}`} />
             )}
           </div>
 
-          <h2 ref={titleBottomRef} aria-hidden className={`font-black uppercase ${titleClassName}`} style={{
+          {!fullscreen && <h2 ref={titleBottomRef} aria-hidden className={`font-black uppercase ${titleClassName}`} style={{
             fontSize: titleFontSize, lineHeight: 0.85, letterSpacing: "-0.04em",
-          }}>{titleBottom}</h2>
+          }}>{titleBottom}</h2>}
         </div>
 
         {children && <div className="pointer-events-none absolute inset-0 z-30">{children}</div>}

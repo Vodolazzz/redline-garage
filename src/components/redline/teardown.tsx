@@ -11,12 +11,12 @@ import { SERVICES, formatRub } from "@/lib/content"
 // joined to the car by drawn leader lines. Then a sideways track of the services.
 
 const PARTS = [
-  { id: "engine", title: "Двигатель", note: "ТО, ГРМ, охлаждение", img: "/media/parts/engine.jpg", spot: [24, 40], slot: [3, 19], group: "Двигатель" },
-  { id: "hemi", title: "Наддув и впуск", note: "Компрессор, дроссель, свечи", img: "/media/parts/hemi.jpg", spot: [38, 40], slot: [3, 45], group: "Двигатель" },
-  { id: "body", title: "Кузов и детейлинг", note: "Полировка, керамика, мойка", img: "/media/parts/scatpack.jpg", spot: [74, 48], slot: [3, 71], group: "Шины и кузов" },
-  { id: "cabin", title: "Электрика", note: "Диагностика, кодирование, климат", img: "/media/parts/cabin.jpg", spot: [56, 16], slot: [80.5, 19], group: "Электрика" },
-  { id: "brakes", title: "Тормоза", note: "Колодки, диски, жидкость", img: "/media/parts/brakes.jpg", spot: [46.5, 73], slot: [80.5, 45], group: "Ходовая и тормоза" },
-  { id: "wheel", title: "Подвеска и шины", note: "Развал, амортизаторы, R22", img: "/media/parts/wheel-rear.jpg", spot: [89, 53], slot: [80.5, 71], group: "Ходовая и тормоза" },
+  { id: "cabin", title: "Электрика", note: "Диагностика, кодирование, климат", img: "/media/parts/cabin.jpg", spot: [57.7, 24.5], slot: [3, 19], group: "Электрика" },
+  { id: "body", title: "Кузов и детейлинг", note: "Полировка, керамика, мойка", img: "/media/parts/scatpack.jpg", spot: [34, 51], slot: [3, 45], group: "Шины и кузов" },
+  { id: "wheel", title: "Подвеска и шины", note: "Развал, амортизаторы, R20", img: "/media/parts/wheel-rear.jpg", spot: [10.6, 69], slot: [3, 71], group: "Ходовая и тормоза" },
+  { id: "engine", title: "Двигатель", note: "ТО, ГРМ, охлаждение", img: "/media/parts/engine.jpg", spot: [74.6, 40.8], slot: [80.5, 19], group: "Двигатель" },
+  { id: "hemi", title: "Наддув и впуск", note: "Компрессор, дроссель, свечи", img: "/media/parts/hemi.jpg", spot: [66, 39], slot: [80.5, 45], group: "Двигатель" },
+  { id: "brakes", title: "Тормоза", note: "Колодки, диски, жидкость", img: "/media/parts/brakes.jpg", spot: [55.6, 76], slot: [80.5, 71], group: "Ходовая и тормоза" },
 ] as const
 
 const clamp = (v: number) => Math.min(1, Math.max(0, v))
@@ -163,13 +163,13 @@ export function Teardown() {
         <div
           ref={carRef}
           className="relative mx-auto mt-[4vh] w-[min(56vw,980px)] will-change-transform max-[899px]:w-[94vw]"
-          style={{ aspectRatio: "3840 / 1717" }}
+          style={{ aspectRatio: "1526 / 633" }}
         >
-          <Image src="/media/parts/charger-cutout.webp" alt="Красный Dodge Charger Daytona" fill sizes="(max-width: 900px) 94vw, 56vw" className="object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,.6)]" />
+          <Image src="/media/parts/hellcat-cutout.webp" alt="Красный седан на диагностике" fill sizes="(max-width: 900px) 94vw, 56vw" className="object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,.6)]" />
           {/* x-ray: the same picture as a cold luminous ghost */}
           <div ref={xrayRef} aria-hidden className="absolute inset-0 opacity-0">
             <Image
-              src="/media/parts/charger-xray.webp"
+              src="/media/parts/hellcat-xray.webp"
               alt=""
               fill
               sizes="(max-width: 900px) 94vw, 56vw"

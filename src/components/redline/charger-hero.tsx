@@ -3,18 +3,18 @@
 import { useCallback, useRef } from "react"
 import { HeroScrub } from "@/components/ui/hero-scrub"
 
-// The opening film: real photographs of a red Charger Daytona turned into 144 frames
-// (scripts/make-frames.mjs). Scroll pulls the camera in, an x-ray scan reveals the
-// engine bay and the cabin, then the shot dives into the supercharged HEMI.
+// The opening film, full screen: a red muscle sedan parked on a wet night street
+// (150 frames from real photographs, scripts/make-frames.mjs). Scroll pulls the camera
+// in, an x-ray scan reveals the engine bay and the cabin, then the shot dives into
+// the supercharged V8. The name of the workshop sits under the car until you scroll.
 
-const FRAMES = 144
-const frameUrl = (i: number) => `/frames/charger/${String(i + 1).padStart(4, "0")}.webp`
+const FRAMES = 150
+const frameUrl = (i: number) => `/frames/hellcat/${String(i + 1).padStart(4, "0")}.webp`
 
-// Captions follow the film itself: t is the position inside the frame sequence.
+// Captions follow the film: t is the position inside the frame sequence.
 const CAPTIONS = [
-  { from: 0.02, to: 0.26, kicker: "Заезд", text: "Красный Charger встаёт на приёмку" },
-  { from: 0.3, to: 0.6, kicker: "Сканер", text: "Смотрим сквозь кузов: двигатель, салон, тормоза" },
-  { from: 0.66, to: 0.98, kicker: "6.2 HEMI", text: "И доходим до каждого болта компрессора" },
+  { from: 0.3, to: 0.58, kicker: "Скан", text: "Смотрим сквозь кузов: двигатель, салон, тормоза" },
+  { from: 0.64, to: 0.98, kicker: "Двигатель", text: "И доходим до каждого болта" },
 ]
 
 const clamp = (v: number) => Math.min(1, Math.max(0, v))
@@ -23,37 +23,49 @@ export function ChargerHero() {
   const capRefs = useRef<(HTMLDivElement | null)[]>([])
   const hudRef = useRef<HTMLDivElement>(null)
   const scanRef = useRef<HTMLSpanElement>(null)
+  const nameRef = useRef<HTMLDivElement>(null)
   const hintRef = useRef<HTMLDivElement>(null)
 
   const onProgress = useCallback((p: number) => {
-    const t = clamp((p - 0.15) / 0.63)
+    const t = clamp((p - 0.02) / 0.9)
     CAPTIONS.forEach((c, i) => {
       const el = capRefs.current[i]
       if (!el) return
-      const v = clamp((t - c.from) / 0.06) * (1 - clamp((t - (c.to - 0.06)) / 0.06))
+      const v = clamp((t - c.from) / 0.05) * (1 - clamp((t - (c.to - 0.05)) / 0.05))
       el.style.opacity = String(v)
       el.style.transform = `translateY(${(1 - v) * 24}px)`
     })
-    const scan = clamp((t - 0.28) / 0.32)
-    if (hudRef.current) hudRef.current.style.opacity = t > 0.26 && t < 0.7 ? "1" : "0"
+    const scan = clamp((t - 0.3) / 0.3)
+    if (hudRef.current) hudRef.current.style.opacity = t > 0.28 && t < 0.66 ? "1" : "0"
     if (scanRef.current) scanRef.current.textContent = `${Math.round(scan * 100)}%`
-    if (hintRef.current) hintRef.current.style.opacity = p > 0.03 ? "0" : "1"
+    if (nameRef.current) {
+      const v = 1 - clamp(p / 0.08)
+      nameRef.current.style.opacity = String(v)
+      nameRef.current.style.transform = `translateY(${(1 - v) * 60}px) scale(${1 + (1 - v) * 0.04})`
+      nameRef.current.style.filter = `blur(${(1 - v) * 8}px)`
+    }
+    if (hintRef.current) hintRef.current.style.opacity = p > 0.02 ? "0" : "1"
   }, [])
 
   return (
     <div data-tone="dark" className="dark">
-      <h1 className="sr-only">REDLINE — автосервис для Dodge Charger и других мощных машин в Москве</h1>
-      <HeroScrub
-        frameCount={FRAMES}
-        frameUrl={frameUrl}
-        titleTop="Dodge"
-        titleBottom="Charger"
-        accentHex="#6e0b07"
-        bgClassName="bg-night"
-        titleClassName="display md:my-[-5svh] text-[#f2f0ec]"
-        titleFontSize="clamp(2.6rem, 8.6vw, 8rem)"
-        onProgress={onProgress}
-      >
+      <h1 className="sr-only">REDLINE — автосервис в Москве: диагностика, ремонт и ТО мощных машин</h1>
+      <HeroScrub fullscreen frameCount={FRAMES} frameUrl={frameUrl} accentHex="#0a0a0b" bgClassName="bg-night" onProgress={onProgress}>
+        {/* street shade: darker at the top and towards the name */}
+        <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,10,11,.55)_0%,rgba(10,10,11,0)_28%,rgba(10,10,11,0)_55%,rgba(10,10,11,.85)_100%)]" />
+
+        <div ref={nameRef} className="absolute inset-x-0 bottom-[5vh] text-center will-change-transform max-md:bottom-[18vh]">
+          <div
+            className="display select-none text-[18.5vw] leading-[0.8] text-[#f2f0ec] md:text-[13vw]"
+            style={{ textShadow: "0 20px 60px rgba(0,0,0,.6)" }}
+          >
+            REDLINE
+          </div>
+          <p className="mt-4 text-[clamp(14px,1.3vw,18px)] font-semibold uppercase tracking-[0.3em] text-white/75">
+            Автосервис · Москва · Электрозаводская, 7
+          </p>
+        </div>
+
         {CAPTIONS.map((c, i) => (
           <div
             key={c.kicker}
@@ -80,7 +92,7 @@ export function ChargerHero() {
           </span>
         </div>
 
-        <div ref={hintRef} className="absolute bottom-8 right-[var(--margin)] flex flex-col items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.25em] text-white/70 transition-opacity duration-500">
+        <div ref={hintRef} className="absolute bottom-8 right-[var(--margin)] flex flex-col items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.25em] text-white/70 transition-opacity duration-500 max-md:hidden">
           Листайте
           <span className="relative h-9 w-[22px] rounded-full border-2 border-white/60">
             <span className="absolute left-1/2 top-1.5 h-2 w-[3px] -translate-x-1/2 animate-bounce rounded bg-[#e10600]" />

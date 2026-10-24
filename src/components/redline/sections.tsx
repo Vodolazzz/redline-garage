@@ -194,8 +194,8 @@ export function Masters() {
           <span className="md:pl-[16.6%]">ключ на 10</span>
         </h2>
         <figure data-rise style={{ ["--i" as string]: 1 }} className="relative aspect-[16/10] overflow-hidden md:col-span-5">
-          <Image src="/media/parts/rear.jpg" alt="Чёрный Dodge Charger Daytona сзади" fill sizes="(max-width: 768px) 100vw, 40vw" className="object-cover transition-transform duration-[1.4s] hover:scale-105" />
-          <figcaption className="absolute bottom-0 left-0 bg-ink/70 px-3 py-1.5 text-[13px] text-white">Charger Daytona после диагностики</figcaption>
+          <Image src="/media/parts/rear.jpg" alt="Чёрный седан сзади" fill sizes="(max-width: 768px) 100vw, 40vw" className="object-cover transition-transform duration-[1.4s] hover:scale-105" />
+          <figcaption className="absolute bottom-0 left-0 bg-ink/70 px-3 py-1.5 text-[13px] text-white">После диагностики — домой</figcaption>
         </figure>
       </div>
       <table className="mt-[72px] w-full border-collapse text-left text-[17px]">

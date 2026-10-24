@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation"
 import { BRAND } from "@/lib/content"
 
 const CREDITS = [
+  ["“Dodge Charger SRT Hellcat Washington DC Metro Area”", "OWS Photography", "CC BY 4.0", "https://commons.wikimedia.org/wiki/File:Dodge_Charger_SRT_Hellcat_Washington_DC_Metro_Area,_USA.jpg"],
+  ["“Wet 23rd Street”", "Eden, Janine and Jim", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Wet_23rd_Street_(51985698296).jpg"],
   ["“2024 Dodge Charger Daytona Scat Pack in Redeye”", "Elise240SX", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:2024_Dodge_Charger_Daytona_Scat_Pack_in_Redeye,_front_left,_2026-08-30.jpg"],
   ["“Dodge Charger Redline at NAIAS 2012”", "Autoviva", "CC BY 2.0", "https://commons.wikimedia.org/wiki/File:Dodge_Charger_Redline_at_NAIAS_2012_(6683787507).jpg"],
   ["“Dodge Charger SRT Hellcat moteur”", "Zytonits", "CC BY-SA 2.0", "https://commons.wikimedia.org/wiki/File:Dodge_Charger_SRT_Hellcat_moteur_(24486213025).jpg"],
