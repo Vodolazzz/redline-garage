@@ -74,7 +74,7 @@ export function SiteFooter() {
         </svg>
         <p className="mt-5 text-[13px] leading-relaxed text-white/55">
           © 2026 {BRAND.legal}, ИНН {BRAND.inn}, ОГРН {BRAND.ogrn}. Сайт — концепт для портфолио; цены, мастера и реквизиты условны.
-          Видео на первом экране — Pexels (бесплатная лицензия Pexels): «Dynamic nighttime muscle car burnout» и «Moody night drift with muscle car on urban streets». Фото: {CREDITS.map(([t, a, l, href], i) => (
+          Видео на первом экране — Pexels (бесплатная лицензия Pexels): «Dynamic nighttime muscle car burnout», «Moody night drift with muscle car on urban streets», «Burnout», «Red car driving on suburban street», «Stylish night walk with urban muscle car». Фото: {CREDITS.map(([t, a, l, href], i) => (
             <span key={href}>
               <a className="underline underline-offset-2 hover:text-white" href={href} target="_blank" rel="noopener noreferrer">{t}</a>{" "}
               — {a}, {l}, Wikimedia Commons{i < CREDITS.length - 1 ? "; " : "."}
