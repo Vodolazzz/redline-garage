@@ -301,7 +301,7 @@ export function Contact() {
         <a
           href={BRAND.phoneHref}
           className="display block whitespace-nowrap text-[clamp(30px,8.3vw,150px)] leading-[0.9] transition-colors duration-300 hover:text-black"
-          data-cursor="Звонок"
+         
         >
           {BRAND.phone}
         </a>
